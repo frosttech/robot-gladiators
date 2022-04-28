@@ -2,45 +2,68 @@
 var playerName = window.prompt("What is your robot's name?");
 var playerHealth = 100;
 var playerAttack = 10;
+var playerMoney = 10;
 
 // You can also log multiple values at once like this
 console.log(playerName, playerAttack, playerHealth);
 
 var enemyName = "Roborto";
-var enemyHealth = 10;
+var enemyHealth = 50;
 var enemyAttack = 12;
 
+var skipCost = 2;
+
 var fight = function() {
-    window.alert("Welcome to Robot Gladiators!");
+    alert("Welcome to Robot Gladiators!");
 
-    //Subtract the value of `playerAttack` from the value of `enemyHealth` and use that result to update the value in the `enemyHealth` variable
-    enemyHealth = enemyHealth - playerAttack;
+    var promptFight = prompt("Would you like to FIGHT or SKIP this battle? Enter 'FIGHT' or 'SKIP' to choose.");
 
-    // Log a resulting message to the console so we know that it worked.    
-    console.log(`You attacked enemy ${enemyName}, they lost ${playerAttack}HP!\n--- Enemy Stats ---\nName: ${enemyName}\nHealth: ${enemyHealth}HP\nAttack: ${enemyAttack}`);
+    switch (promptFight) {
+        case 'fight' || 'FIGHT':
+            // Subtracts 'playerAttack' from 'enemyHealth' and saves new value
+            enemyHealth = enemyHealth - playerAttack;
+            // Player -> Enemy damage results
+            console.log(`Enemy ${enemyName} was attacked by player ${playerName} and lost ${playerAttack}HP!\n--- Enemy Stats ---\nName: ${enemyName}\nHealth: ${enemyHealth}HP\nAttack: ${enemyAttack}`);
+            // check enemy's health
+            if (enemyHealth <= 0) {
+                alert(`Enemy ${enemyName} has died!`);
+            }
+            else {
+                alert(`Enemy ${enemyName} has ${enemyHealth}HP remaining.`);
+            }
 
-    // check enemy's health
-    if (enemyHealth <= 0) {
-        alert(`Enemy ${enemyName} has died!`);
+            // subtracts 'enemyAttack' from 'playerHealth' and saves new value
+            playerHealth = playerHealth - enemyAttack;
+            // Enemy -> Player damage results
+            console.log(`Player ${playerName} was attacked by enemy ${enemyName} and lost ${enemyAttack}HP!\n--- Player Stats ---\nName: ${playerName}\nHealth: ${playerHealth}HP\nAttack: ${playerAttack}\nMoney: ${playerMoney} Gold`);
+            // check player's health
+            if (playerHealth <= 0) {
+                alert(`Player ${playerName} has died!`);
+            }
+            else {
+                alert(`Player ${playerName} has ${playerHealth}HP remaining.`);
+            }
+
+            break;
+
+
+        case 'skip' || 'SKIP':
+            var confirmSkip = window.confirm(`Are you sure you'd like to quit?\nTHIS WILL COST ${skipCost} GOLD!`);
+            if (confirmSkip) {
+                playerMoney = playerMoney - skipCost;
+                var skippedBattle = `Player ${playerName} skipped the battle and lost ${enemyAttack} gold!\n--- Player Stats ---\nName: ${playerName}\nHealth: ${playerHealth}HP\nAttack: ${playerAttack}\nMoney: ${playerMoney} Gold`;
+                alert(skippedBattle);
+                console.log(skippedBattle);
+            }
+            else {
+                fight();
+            }
+            break;
+        default:
+            alert(`'${promptFight}' is not a valid option, please try again!`);
+            console.log(`User entered invalid option: '${promptFight}'`);
+            break;
     }
-    else {
-        alert(`Enemy ${enemyName} has ${enemyHealth}HP remaining.`);
-    }
-
-    // Subtract the value of `enemyAttack` from the value of `playerHealth` and use that result to update the value in the `playerHealth` variable.
-    playerHealth = playerHealth - enemyAttack;
-
-    // Log a resulting message to the console so we know that it worked.
-    console.log(`You were attacked by enemy ${enemyName} and lost ${enemyAttack}HP!\n--- Player Stats ---\nName: ${playerName}\nHealth: ${playerHealth}HP\nAttack: ${playerAttack}`);
-
-    // check player's health
-    if (playerHealth <= 0) {
-        alert(`Player ${playerName} has died!`);
-    }
-    else {
-        alert(`Player ${playerName} has ${playerHealth}HP remaining.`);
-    }
-
 };
 
 fight();
