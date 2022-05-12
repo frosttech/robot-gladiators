@@ -2,17 +2,23 @@
 // PLAYER CONFIG
 var playerName = window.prompt("What is your robot's name?");
 var setPlayerHealth = 100;
-var setPlayerAttack = 10;
+var setPlayerAttack = 20;
 var setPlayerMoney = 10;
 
 // ENEMY CONFIG
 var setEnemyHealth = 50;
-var setEnemyAttack = 50;
+var setEnemyAttack = 10;
 var enemyNames = ["Roborto", "Amy Android", "Robo Trumble"];
 
 // BATTLE CONFIG
 var setFightReward = 20;
 var setSkipCost = 10;
+
+// SHOP CONFIG
+var setRefillValue = 20;
+var setRefillCost = 7;
+var setUpgradeValue = 6;
+var setUpgradeCost = 7;
 
 
 
@@ -71,6 +77,10 @@ var startGame = function() {
     enemyAttack = setEnemyAttack;
     fightReward = setFightReward;
     skipCost = setSkipCost;
+    refillValue = setRefillValue;
+    refillCost = setRefillCost;
+    upgradeValue = setUpgradeValue;
+    upgradeCost = setUpgradeCost;
 
 
     for (var i = 0; i < enemyNames.length; i++) {
@@ -80,6 +90,14 @@ var startGame = function() {
             enemyHealth = 50;
             debugger;
             fight(pickedEnemyName);
+
+            if (playerHealth > 0 && i < enemyNames.length - 1) {
+                var storeConfirm = confirm("The fight is over, visit the store before the next round?");
+
+                if (storeConfirm) {
+                    shop();
+                }
+            }
         }
         else {
             alert("You have lost your robot in battle! GAME OVER!");
@@ -101,6 +119,42 @@ var endGame = function() {
     }
     else {
         alert("Thank you for playing Robot Gladiators! Come back soon!");
+    }
+};
+
+var shop = function() {
+    var shopOptionPrompt = prompt("Would you like to REFILL your health, UPGRADE your attack, or LEAVE the store? Please enter one: 'REFILL', 'UPGRADE', or 'LEAVE' to make a choice");
+
+    switch (shopOptionPrompt.toLowerCase()) {
+        case "refill":
+            if (playerMoney >= refillCost) {
+                alert(`Refilling player's health by ${String(refillValue)} for ${String(refillCost)} Gold.`);
+                // increase health and decrease gold
+                playerHealth = playerHealth + refillValue;
+                playerMoney = playerMoney - refillCost;
+            }
+            else {
+                alert("You don't have enough Gold!");
+            }
+            break;
+        case "upgrade":
+            if (playerMoney >= upgradeCost) {
+                alert(`Upgrading player's attack by ${String(upgradeValue)} for ${String(upgradeCost)} Gold.`);
+                // increase attack and decrease gold
+                playerAttack = playerAttack + upgradeValue;
+                playerMoney = playerMoney - upgradeCost;
+            }
+            else {
+                alert("You don't have enough Gold!");
+            }
+            break;
+        case "leave":
+            alert("Leaving the store.");
+            break;
+        default:
+            alert("You did not pick a valid option. Try again.");
+            shop();
+            break;
     }
 };
 
