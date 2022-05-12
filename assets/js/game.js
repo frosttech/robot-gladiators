@@ -1,17 +1,20 @@
+
+// PLAYER CONFIG
 var playerName = window.prompt("What is your robot's name?");
-var playerHealth = 100;
-var playerAttack = 10;
-var playerMoney = 10;
+var setPlayerHealth = 100;
+var setPlayerAttack = 10;
+var setPlayerMoney = 10;
 
-// You can also log multiple values at once like this
-console.log(playerName, playerAttack, playerHealth);
-
+// ENEMY CONFIG
+var setEnemyHealth = 50;
+var setEnemyAttack = 50;
 var enemyNames = ["Roborto", "Amy Android", "Robo Trumble"];
-var enemyHealth = 50;
-var enemyAttack = 50;
 
-var fightReward = 20;
-var skipCost = 10;
+// BATTLE CONFIG
+var setFightReward = 20;
+var setSkipCost = 10;
+
+
 
 var fight = function(enemyName) {
     while (enemyHealth > 0 && playerHealth > 0) {
@@ -59,16 +62,46 @@ var fight = function(enemyName) {
     } // while loop end
 }; // fight(); end
 
-for (var i = 0; i < enemyNames.length; i++) {
+var startGame = function() {
+    // resets game config
+    playerHealth = setPlayerHealth;
+    playerAttack = setPlayerAttack;
+    playerMoney = setPlayerMoney;
+    enemyHealth = setEnemyHealth;
+    enemyAttack = setEnemyAttack;
+    fightReward = setFightReward;
+    skipCost = setSkipCost;
+
+
+    for (var i = 0; i < enemyNames.length; i++) {
+        if (playerHealth > 0) {
+            alert("Welcome to Robot Gladiators! Round " + (i + 1));
+            var pickedEnemyName = enemyNames[i];
+            enemyHealth = 50;
+            debugger;
+            fight(pickedEnemyName);
+        }
+        else {
+            alert("You have lost your robot in battle! GAME OVER!");
+            break;
+        }
+    } // for loop end
+    endGame();
+};
+
+var endGame = function() {
     if (playerHealth > 0) {
-        alert("Welcome to Robot Gladiators! Round " + (i + 1));
-        var pickedEnemyName = enemyNames[i];
-        enemyHealth = 50;
-        debugger;
-        fight(pickedEnemyName);
+        alert(`Great job, you've survived the game! You now have a score of ${playerMoney} Gold!`);
+    }
+
+    var playAgainConfirm = confirm("Would you like to play again?");
+    if (playAgainConfirm) {
+        // restart the game
+        startGame();
     }
     else {
-        alert("You have lost your robot in battle! GAME OVER!");
-        break;
+        alert("Thank you for playing Robot Gladiators! Come back soon!");
     }
-} // for loop end
+};
+
+startGame();
