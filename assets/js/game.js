@@ -1,32 +1,60 @@
 
 // PLAYER CONFIG
-var playerName = window.prompt("What is your robot's name?");
-var setPlayerHealth = 100;
-var setPlayerAttack = 20;
-var setPlayerMoney = 10;
+var playerInfo = {
+    name: window.prompt("What is your robot's name?"),
+    health: 100,
+    attack: 20,
+    money: 10
+}
 
 // ENEMY CONFIG
-var setEnemyHealthMax = 60;
-var setEnemyHealthMin = 20;
-var setEnemyAttackMax = 20;
-var setEnemyAttackMin = 10;
-var enemyNames = ["Roborto", "Amy Android", "Robo Trumble"];
+var enemyInfo = {
+    config: {
+        maxHealth: 60,
+        minHealth: 20,
+        maxAttack: 20,
+        minAttack: 10
+    },
+    enemies: [
+        {
+            name: "Roborto",
+            shield: {
+                type: "wood",
+                strength: 10
+            }
+        },
+        {
+            name: "Amy Android"
+        },
+        {
+            name: "Robo Trumble"
+        }
+    ]
+}
 
 // BATTLE CONFIG
-var setFightReward = 20;
-var setSkipCost = 10;
-var setDamageOffset = 3;
+var battleInfo = {
+    reward: 20,
+    cost: 10,
+    offset: 3
+}
 
 // SHOP CONFIG
-var setRefillValue = 20;
-var setRefillCost = 7;
-var setUpgradeValue = 6;
-var setUpgradeCost = 7;
+var shopInfo = {
+    refill: {
+        cost: 7,
+        value: 20
+    },
+    upgrade: {
+        cost: 7,
+        value: 6
+    }
+}
 
 
 
-var fight = function(enemyName) {
-    while (enemyHealth > 0 && playerHealth > 0) {
+var fight = function(enemy) {
+    while (enemy.health > 0 && playerHealth > 0) {
         var promptFight = prompt("Would you like to FIGHT or SKIP this battle? Enter 'FIGHT' or 'SKIP' to choose.");
 
         // CHECKING FOR SKIP
@@ -35,7 +63,7 @@ var fight = function(enemyName) {
                 var confirmSkip = confirm(`Are you sure you'd like to quit?\nTHIS WILL COST ${skipCost} GOLD!`);
                 if (confirmSkip) {
                     playerMoney = Math.max(0, playerMoney - skipCost);
-                    var skippedBattle = `Player ${playerName} skipped the battle and lost ${enemyAttack} gold!\n--- Player Stats ---\nName: ${playerName}\nHealth: ${playerHealth}HP\nAttack: ${playerAttack}\nMoney: ${playerMoney} Gold`;
+                    var skippedBattle = `Player ${playerInfo.name} skipped the battle and lost ${enemy.attack} gold!\n--- Player Stats ---\nName: ${playerInfo.name}\nHealth: ${playerHealth}HP\nAttack: ${playerAttack}\nMoney: ${playerMoney} Gold`;
                     alert(skippedBattle);
                     console.log(skippedBattle);
                     break;
@@ -48,59 +76,71 @@ var fight = function(enemyName) {
 
         // ENEMY DAMAGE
         var damage = randomNumber(playerAttack, playerAttack - damageOffset);
-        enemyHealth = Math.max(0, enemyHealth - damage);
-        console.log(`Enemy ${enemyName} was attacked by player ${playerName} and lost ${damage}HP!\n--- Enemy Stats ---\nName: ${enemyName}\nHealth: ${enemyHealth}HP\nAttack: ${enemyAttack}`);
-        if (enemyHealth <= 0) {
-            alert(`Enemy ${enemyName} has died!`);
+        var preDamage = enemy.health;
+        enemy.health = Math.max(0, enemy.health - damage);
+        // console.log(`Enemy ${enemy.name} was attacked by player ${playerInfo.name} and lost ${damage}HP!\n--- Enemy Stats ---\nName: ${enemy.name}\nHealth: ${enemy.health}HP\nAttack: ${enemy.attack}`);
+        console.log(`${enemy.name}\n HP: ${preDamage} -> ${enemy.health}\nDMG: ${damage}`);
+        if (enemy.health <= 0) {
+            alert(`Enemy ${enemy.name} has died!`);
             playerMoney = playerMoney + fightReward;
             break;
         }
         else {
-            alert(`Enemy ${enemyName} has ${enemyHealth}HP remaining.`);
+            alert(`Enemy ${enemy.name} has ${enemy.health}HP remaining.`);
         }
 
         // PLAYER DAMAGE
-        var damage = randomNumber(enemyAttack, enemyAttack - damageOffset);
+        var damage = randomNumber(enemy.attack, enemy.attack - damageOffset);
         playerHealth = Math.max(0, playerHealth - damage);
-        console.log(`Player ${playerName} was attacked by enemy ${enemyName} and lost ${damage}HP!\n--- Player Stats ---\nName: ${playerName}\nHealth: ${playerHealth}HP\nAttack: ${playerAttack}\nMoney: ${playerMoney} Gold`);
+        // console.log(`Player ${playerInfo.name} was attacked by enemy ${enemy.name} and lost ${damage}HP!\n--- Player Stats ---\nName: ${playerInfo.name}\nHealth: ${playerHealth}HP\nAttack: ${playerAttack}\nMoney: ${playerMoney} Gold`);
+        console.log(`${playerInfo.name}\n HP: ${preDamage} -> ${playerHealth}\nDMG: ${damage}\nGLD: ${playerMoney}`);
         if (playerHealth <= 0) {
-            alert(`Player ${playerName} has died!`);
+            alert(`Player ${playerInfo.name} has died!`);
             break;
         }
         else {
-            alert(`Player ${playerName} has ${playerHealth}HP remaining.`);
+            alert(`Player ${playerInfo.name} has ${playerHealth}HP remaining.`);
         }
     } // while loop end
 }; // fight(); end
 
 var startGame = function() {
     // resets game config
-    playerHealth = setPlayerHealth;
-    playerAttack = setPlayerAttack;
-    playerMoney = setPlayerMoney;
+    playerHealth = playerInfo.health;
+    playerAttack = playerInfo.attack;
+    playerMoney = playerInfo.money;
+
+
+    /*
     // randomizes enemy health based on Min and Max variables
-    enemyHealth = randomNumber(setEnemyHealthMax, setEnemyHealthMin);
-    console.log(`- Enemy Health Range -\nMin: ${setEnemyHealthMin} | Max: ${setEnemyHealthMax}\nRandomized Value: ${enemyHealth}`);
+    enemyHealth = randomNumber(enemyInfo.config.maxHealth, enemyInfo.config.minHealth);
+    console.log(`- Enemy Health Range -\nMin: ${enemyInfo.config.minHealth} | Max: ${enemyInfo.config.maxHealth}\nRandomized Value: ${enemyHealth}`);
     // randomizes enemy attack based on Min and Max variables
-    enemyAttack = randomNumber(setEnemyAttackMax, setEnemyAttackMin);
-    console.log(`- Enemy Attack Range -\nMin: ${setEnemyAttackMin} | Max: ${setEnemyAttackMax}\nRandomized Value: ${enemyAttack}`);
-    fightReward = setFightReward;
-    skipCost = setSkipCost;
-    refillValue = setRefillValue;
-    refillCost = setRefillCost;
-    upgradeValue = setUpgradeValue;
-    upgradeCost = setUpgradeCost;
-    damageOffset = setDamageOffset;
+    enemyAttack = randomNumber(enemyInfo.config.maxAttack, enemyInfo.config.minAttack);
+    console.log(`- Enemy Attack Range -\nMin: ${enemyInfo.config.minAttack} | Max: ${enemyInfo.config.maxAttack}\nRandomized Value: ${enemyAttack}`);
+    */
 
 
-    for (var i = 0; i < enemyNames.length; i++) {
+    fightReward = battleInfo.reward;
+    skipCost = battleInfo.cost;
+    refillValue = shopInfo.refill.value;
+    refillCost = shopInfo.refill.cost;
+    upgradeValue = shopInfo.upgrade.value;
+    upgradeCost = shopInfo.upgrade.cost;
+    damageOffset = battleInfo.offset;
+
+
+    for (var i = 0; i < enemyInfo.enemies.length; i++) {
         if (playerHealth > 0) {
             alert("Welcome to Robot Gladiators! Round " + (i + 1));
-            var pickedEnemyName = enemyNames[i];
-            enemyHealth = 50;
-            fight(pickedEnemyName);
+            var pickedEnemyObj = enemyInfo.enemies[i];
+            // adds a random value for health to active enemy object (min/max determined by config)
+            pickedEnemyObj.health = randomNumber(enemyInfo.config.maxHealth, enemyInfo.config.minHealth);
+            // adds a random value for attack to active enemy object (min/max determined by config)
+            pickedEnemyObj.attack = randomNumber(enemyInfo.config.maxAttack, enemyInfo.config.minAttack);
+            fight(pickedEnemyObj);
 
-            if (playerHealth > 0 && i < enemyNames.length - 1) {
+            if (playerHealth > 0 && i < enemyInfo.enemies.length - 1) {
                 var storeConfirm = confirm("The fight is over, visit the store before the next round?");
 
                 if (storeConfirm) {
