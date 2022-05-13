@@ -60,29 +60,33 @@ var shopInfo = {
     }
 }
 
+var fightOrSkip = function() {
+    var promptFight = prompt("Would you like to FIGHT or SKIP this battle? Enter 'FIGHT' or 'SKIP' to choose.");
 
+    if (promptFight == "" || promptFight == null) {
+        alert("You need to provide a valid answer! Please try again.");
+        return fightOrSkip();
+    }
+
+    if (promptFight.toLowerCase() == "skip") {
+        if (playerMoney >= skipCost) {
+            var confirmSkip = confirm(`Are you sure you'd like to quit?\nTHIS WILL COST ${skipCost} GOLD!`);
+            if (confirmSkip) {
+                playerMoney = Math.max(0, playerMoney - skipCost);
+                var skippedBattle = `Player ${playerInfo.name} skipped the battle and lost ${enemy.attack} gold!\n--- Player Stats ---\nName: ${playerInfo.name}\nHealth: ${playerHealth}HP\nAttack: ${playerAttack}\nMoney: ${playerMoney} Gold`;
+                alert(skippedBattle);
+                console.log(skippedBattle);
+            }
+        }
+        else {
+            alert('You do not have enough gold to skip the battle!');
+        }
+    }
+}
 
 var fight = function(enemy) {
     while (enemy.health > 0 && playerHealth > 0) {
-        var promptFight = prompt("Would you like to FIGHT or SKIP this battle? Enter 'FIGHT' or 'SKIP' to choose.");
-
-        // CHECKING FOR SKIP
-        if (promptFight.toLowerCase() == "skip") {
-            if (playerMoney >= skipCost) {
-                var confirmSkip = confirm(`Are you sure you'd like to quit?\nTHIS WILL COST ${skipCost} GOLD!`);
-                if (confirmSkip) {
-                    playerMoney = Math.max(0, playerMoney - skipCost);
-                    var skippedBattle = `Player ${playerInfo.name} skipped the battle and lost ${enemy.attack} gold!\n--- Player Stats ---\nName: ${playerInfo.name}\nHealth: ${playerHealth}HP\nAttack: ${playerAttack}\nMoney: ${playerMoney} Gold`;
-                    alert(skippedBattle);
-                    console.log(skippedBattle);
-                    break;
-                }
-            }
-            else {
-                alert('You do not have enough gold to skip the battle!');
-            }
-        }
-
+        fightOrSkip();
         // ENEMY DAMAGE
         var damage = randomNumber(playerAttack, playerAttack - damageOffset);
         var preDamage = enemy.health;
